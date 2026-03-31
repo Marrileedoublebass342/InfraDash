@@ -1,0 +1,133 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  OPERATOR
+  VIEWER
+}
+
+enum DiskType {
+  HDD
+  SSD
+  NVME
+}
+
+enum IPType {
+  RESERVED
+  CLIENT
+  NODE
+}
+
+enum IPStatus {
+  FREE
+  IN_USE
+  RESERVED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Server {
+  id                 String              @id @default(uuid())
+  name               String
+  location           String?
+  comment            String?
+  vms                VM[]
+  ips                IPAddress[]
+  networkConnections NetworkConnection[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@map("servers")
+}
+
+model VM {
+  id                 String              @id @default(uuid())
+  name               String
+  serverId           String
+  server             Server              @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  comment            String?
+  disks              Disk[]
+  ips                IPAddress[]
+  networkConnections NetworkConnection[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@map("vms")
+}
+
+model Disk {
+  id        String   @id @default(uuid())
+  vmId      String
+  vm        VM       @relation(fields: [vmId], references: [id], onDelete: Cascade)
+  name      String?
+  size      Int      // Size in GB
+  type      DiskType @default(SSD)
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("disks")
+}
+
+model IPAddress {
+  id        String   @id @default(uuid())
+  address   String   @unique
+  type      IPType   @default(NODE)
+  status    IPStatus @default(FREE)
+  serverId  String?
+  server    Server?  @relation(fields: [serverId], references: [id], onDelete: SetNull)
+  vmId      String?
+  vm        VM?      @relation(fields: [vmId], references: [id], onDelete: SetNull)
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ip_addresses")
+}
+
+model NetworkConnection {
+  id        String   @id @default(uuid())
+  name      String?
+  bandwidth Int      // Bandwidth in Mbps
+  color     String?  // Hex color for workspace visualization (e.g. #3b82f6)
+  serverId  String?
+  server    Server?  @relation(fields: [serverId], references: [id], onDelete: SetNull)
+  vmId      String?
+  vm        VM?      @relation(fields: [vmId], references: [id], onDelete: SetNull)
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("network_connections")
+}
+
+model WorkspaceLayout {
+  id        String   @id @default(uuid())
+  userId    String
+  nodeId    String   // e.g., "server-uuid" or "vm-uuid"
+  x         Float
+  y         Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, nodeId])
+  @@map("workspace_layouts")
+}
